@@ -13,8 +13,8 @@ resource "digitalocean_app" "insizon_angular_prod" {
   spec {
     name   = "insizon-angular-prod"
     region = var.region
-    domain { name = var.prod_domain }
     domain { name = "www.${var.prod_domain}" }
+    domain { name = var.prod_domain }
     static_site {
       name          = "web"
       build_command = var.prod_build_cmd
