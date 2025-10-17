@@ -2,9 +2,9 @@ name: terraform
 
 on:
   push:
-    branches: ["main"]
+    branches: ['**']            # all branches
   pull_request:
-    branches: ["main"]
+    branches: ['**']            # all branches
 
 permissions:
   contents: read
@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_IN_AUTOMATION: "true"
-      # DO token for provider auth (picked up by var "do_token")
       TF_VAR_do_token: ${{ secrets.DO_TOKEN }}
 
     steps:
@@ -32,10 +31,16 @@ jobs:
       - name: Init (backend from config)
         run: bash ./shell/backend_init.sh
 
-      - name: Plan (PRs)
-        if: github.event_name == 'pull_request'
+      # ── PLAN on everything that is NOT main (push or PR)
+      - name: Plan (non-main)
+        if: |
+          (github.event_name == 'push' && github.ref != 'refs/heads/main') ||
+          (github.event_name == 'pull_request' && github.base_ref != 'main')
         run: bash ./shell/plan.sh
 
-      - name: Apply (push to main)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      # ── APPLY on push to main OR PR targeting main
+      - name: Apply (main)
+        if: |
+          (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+          (github.event_name == 'pull_request' && github.base_ref == 'main')
         run: bash ./shell/apply.sh

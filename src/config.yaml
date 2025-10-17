@@ -23,7 +23,7 @@ private_sync:
 
 github:
   owner: "itxcrusher"
-  repo: "terraform-do-inizon"
+  repo: "terraform-do-insizon"
   main_branch: "main"
   dev_branch: "dev"
 

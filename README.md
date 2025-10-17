@@ -195,7 +195,7 @@ S3_URI="s3://custom-bucket/custom-prefix" bash ./shell/private_sync.sh pull
 
 ## Credits
 
-**Owner:** Muhammad Hassaan Javed | Senior Infrastructure Engineer | [Linktree](https://linktr.ee/itxcrusher)
+**Owner:** Muhammad Hassaan Javed | Senior Infrastructure Engineer | [Linktree](https://linktr.ee/itxcrusher)  
 **Platform:** DigitalOcean App Platform
 **Infra:** Terraform + GitHub OIDC + S3/DynamoDB backend
 **Domains:**
