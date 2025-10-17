@@ -1,3 +1,12 @@
+#
+/secrets/*
+!.gitkeep
+private/*
+.env
+.env.sh
+env.sh
+.DS_Store
+
 # Local .terraform directories
 .terraform/
 

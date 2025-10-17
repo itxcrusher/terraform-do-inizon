@@ -1,0 +1,55 @@
+# ===================================================================
+#                             CONFIG.YAML
+#         Single Source of Truth — DigitalOcean App Platform
+# ===================================================================
+
+enabled: true
+
+# --- Backend & CI/CD (for remote Terraform state on AWS) ---
+backend:
+  account_id: "252925426330"
+  bucket: "insizon-terraform-remote-state-backend-bucket"
+  key: "do.tfstate"
+  region: "us-east-2"
+  profile: "insizon"
+  encrypt: true
+  use_lockfile: true
+  dynamodb_table: "terraform-locks"   # required when use_lockfile=true
+
+# --- Private artifacts sync (used by shell/private_sync.sh) ---
+private_sync:
+  bucket: "insizon-aws-private"
+  remote_dir_name: "do"
+
+github:
+  owner: "itxcrusher"
+  repo: "terraform-do-inizon"
+  main_branch: "main"
+  dev_branch: "dev"
+
+oidc:
+  thumbprint_list:
+    - "6938fd4d98bab03faadb97b34396831e3780aea1"
+
+# --- DigitalOcean project & app config ---
+digitalocean:
+  # Provide EITHER project_id OR project_name (if project_id is "", we resolve by name)
+  project_id: ""
+  project_name: "insizon"
+  region: "nyc"
+  github_repo: "insizon/insizonAngular"
+  output_dir: "dist/client/browser"
+
+  apps:
+    - name: "insizon-angular"
+      environments:
+        prod:
+          domains: ["www.insizon.com", "insizon.com"]
+          branch: "main"
+          build_command: "npm ci && npm run build:prod"
+          node_version: "20"
+        dev:
+          domains: ["dev.insizon.com"]
+          branch: "dev"
+          build_command: "npm ci && npm run build:dev"
+          node_version: "20"

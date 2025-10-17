@@ -1,0 +1,41 @@
+name: terraform
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  tf:
+    runs-on: ubuntu-latest
+    env:
+      TF_IN_AUTOMATION: "true"
+      # DO token for provider auth (picked up by var "do_token")
+      TF_VAR_do_token: ${{ secrets.DO_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC for backend state)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::252925426330:role/Do-GitHubOIDC-TerraformRole
+          aws-region: us-east-2
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Init (backend from config)
+        run: bash ./shell/backend_init.sh
+
+      - name: Plan (PRs)
+        if: github.event_name == 'pull_request'
+        run: bash ./shell/plan.sh
+
+      - name: Apply (push to main)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: bash ./shell/apply.sh
